@@ -176,16 +176,21 @@ Public Class Form1
         '------------------------------------------------------------------------------------------------------------
         ' give the graph a line  
         ' these values are added to the graph only and not the textboxs or saved file
+        Try
+            ' update the graph data 
+            Chart1.Series.Clear()
+            '  s1.Name = "Temp"
+            s1.ChartType = SeriesChartType.Line
+            s1.Points.AddXY(10, 50)
+            Chart1.Series.Add(s1)
 
-        ' update the graph data 
-        Chart1.Series.Clear()
-        '  s1.Name = "Temp"
-        s1.ChartType = SeriesChartType.Line
-        s1.Points.AddXY(10, 50)
-        Chart1.Series.Add(s1)
+            s1.Points.AddXY(20, 100)
+            Chart1.Series.Add(s1)
+        Catch ex As Exception
+            MsgBox(ex.ToString, MsgBoxStyle.Critical)
 
-        s1.Points.AddXY(20, 100)
-        Chart1.Series.Add(s1)
+        End Try
+
         '------------------------------------------------------------------------------------------------------------
         ' load the max temps 
         Try
