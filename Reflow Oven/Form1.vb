@@ -187,7 +187,7 @@ Public Class Form1
             s1.Points.AddXY(20, 100)
             Chart1.Series.Add(s1)
         Catch ex As Exception
-            MsgBox(ex.ToString, MsgBoxStyle.Critical)
+            '  MsgBox(ex.ToString, MsgBoxStyle.Critical)
 
         End Try
 
@@ -565,7 +565,7 @@ Public Class Form1
         SerialPortConnect() ' Connect the port 
         ComFailNotified = False
         ComFailure = False ' reset the communications failure flags
-        GetUpdate()
+
 
     End Sub
 
@@ -2757,5 +2757,9 @@ skippy:
             lbl_exceptionlabel.Visible = True
             lbl_ExceptionCnt.Visible = True
         End If
+    End Sub
+
+    Private Sub btn_UpdatePorts_Click_1(sender As System.Object, e As System.EventArgs) Handles btn_UpdatePorts.Click
+        UpdatePorts()
     End Sub
 End Class ' END CODE SEGMENT
