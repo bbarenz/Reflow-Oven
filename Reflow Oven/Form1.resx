@@ -117,6 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Label71.Text" xml:space="preserve">
+    <value>There are four user configurable controls: 
+1. Top Heater         ( Script command: 
+2. Bottom Heater    ( Script command:
+3 .Convection Fan  ( Script command:
+4. Exhaust Fan       ( Script command:</value>
+  </data>
+  <metadata name="ToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>715, 17</value>
+  </metadata>
+  <data name="Label87.Text" xml:space="preserve">
+    <value>The averaging coefficient is how many times the oven temp is averaged before
+being displayed. A higher number means the temperature is more accurate 
+however it will take longer to update. A low number means the temperature may
+be less accurate but it will update quickly. The default value is 10.
+</value>
+  </data>
+  <data name="Label65.Text" xml:space="preserve">
+    <value>The thermocouple sensor will always read the correct temperature but
+may not always respond as desired depending on placement and other factors. 
+
+The working temperature can be adjusted using the below equation. The temp
+is updated in real time allowing a preview. When done click "Apply".
+</value>
+  </data>
   <data name="Label59.Text" xml:space="preserve">
     <value>The oven temperture sensor uses a type-K thermo couple. The operating range is from 100°F - 750°F.  Fo saftey reasons
 the oven should not be run past 700°F for prolonged periods. The oven is hard coded shut down past 750°F
@@ -147,31 +172,6 @@ longer to reach 200°C then a FR4 board. The Profile Editor allows a choice betw
 
 Both allow the temperature to be logged at user defined time intervals using the Data Logger. The data is populated in two 
 textboxes and can be copied for use in other applications ( spreadsheet, data base, etc).</value>
-  </data>
-  <data name="Label71.Text" xml:space="preserve">
-    <value>There are four user configurable controls: 
-1. Top Heater         ( Script command: 
-2. Bottom Heater    ( Script command:
-3 .Convection Fan  ( Script command:
-4. Exhaust Fan       ( Script command:</value>
-  </data>
-  <metadata name="ToolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>715, 17</value>
-  </metadata>
-  <data name="Label87.Text" xml:space="preserve">
-    <value>The averaging coefficient is how many times the oven temp is averaged before
-being displayed. A higher number means the temperature is more accurate 
-however it will take longer to update. A low number means the temperature may
-be less accurate but it will update quickly. The default value is 10.
-</value>
-  </data>
-  <data name="Label65.Text" xml:space="preserve">
-    <value>The thermocouple sensor will always read the correct temperature but
-may not always respond as desired depending on placement and other factors. 
-
-The working temperature can be adjusted using the below equation. The temp
-is updated in real time allowing a preview. When done click "Apply".
-</value>
   </data>
   <data name="Label126.Text" xml:space="preserve">
     <value>We strive to make Reflow Oven Console glitch free and feature rich but we need your help. Please use the form 

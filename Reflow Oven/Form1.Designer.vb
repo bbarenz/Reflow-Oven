@@ -47,11 +47,14 @@ Partial Class Form1
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.lbl_CaseTemp = New System.Windows.Forms.Label()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
-        Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.Label59 = New System.Windows.Forms.Label()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
-        Me.Label13 = New System.Windows.Forms.Label()
-        Me.Label12 = New System.Windows.Forms.Label()
+        Me.TabPage6 = New System.Windows.Forms.TabPage()
+        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.Label100 = New System.Windows.Forms.Label()
+        Me.Label97 = New System.Windows.Forms.Label()
+        Me.nud_TempSetThreshold = New System.Windows.Forms.NumericUpDown()
+        Me.mtxt_SetTemp = New System.Windows.Forms.MaskedTextBox()
+        Me.btn_RunHoldTemp = New System.Windows.Forms.Button()
+        Me.Label95 = New System.Windows.Forms.Label()
         Me.tab_ProfileEditor = New System.Windows.Forms.TabPage()
         Me.Label64 = New System.Windows.Forms.Label()
         Me.Label63 = New System.Windows.Forms.Label()
@@ -268,6 +271,11 @@ Partial Class Form1
         Me.lbl_SelectedPort = New System.Windows.Forms.Label()
         Me.lst_ComPorts = New System.Windows.Forms.ListBox()
         Me.Label10 = New System.Windows.Forms.Label()
+        Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.Label59 = New System.Windows.Forms.Label()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.Label12 = New System.Windows.Forms.Label()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
         Me.GroupBox59 = New System.Windows.Forms.GroupBox()
         Me.GroupBox63 = New System.Windows.Forms.GroupBox()
@@ -305,6 +313,11 @@ Partial Class Form1
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.lbl_ExceptionCnt = New System.Windows.Forms.Label()
         Me.lbl_exceptionlabel = New System.Windows.Forms.Label()
+        Me.btn_StopHoldTemp = New System.Windows.Forms.Button()
+        Me.Label104 = New System.Windows.Forms.Label()
+        Me.Label106 = New System.Windows.Forms.Label()
+        Me.nud_HoldUpdateInterval = New System.Windows.Forms.NumericUpDown()
+        Me.chk_HoldRunConv = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.grb_SystemStatus.SuspendLayout()
         Me.GroupBox7.SuspendLayout()
@@ -313,8 +326,9 @@ Partial Class Form1
         Me.GroupBox4.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.TabControl1.SuspendLayout()
-        Me.TabPage1.SuspendLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.TabPage6.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
+        CType(Me.nud_TempSetThreshold, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tab_ProfileEditor.SuspendLayout()
         Me.gbox_ProfileEditorPrgmCntrls.SuspendLayout()
         Me.GroupBox15.SuspendLayout()
@@ -346,10 +360,13 @@ Partial Class Form1
         Me.GroupBox21.SuspendLayout()
         Me.GroupBox11.SuspendLayout()
         Me.GroupBox8.SuspendLayout()
+        Me.TabPage1.SuspendLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage4.SuspendLayout()
         Me.GroupBox59.SuspendLayout()
         Me.GroupBox63.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
+        CType(Me.nud_HoldUpdateInterval, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'GroupBox1
@@ -589,11 +606,12 @@ Partial Class Form1
         '
         'TabControl1
         '
-        Me.TabControl1.Controls.Add(Me.TabPage1)
+        Me.TabControl1.Controls.Add(Me.TabPage6)
         Me.TabControl1.Controls.Add(Me.tab_ProfileEditor)
         Me.TabControl1.Controls.Add(Me.TabPage2)
         Me.TabControl1.Controls.Add(Me.TabPage5)
         Me.TabControl1.Controls.Add(Me.TabPage3)
+        Me.TabControl1.Controls.Add(Me.TabPage1)
         Me.TabControl1.Controls.Add(Me.TabPage4)
         Me.TabControl1.Location = New System.Drawing.Point(146, 39)
         Me.TabControl1.Name = "TabControl1"
@@ -601,57 +619,91 @@ Partial Class Form1
         Me.TabControl1.Size = New System.Drawing.Size(688, 598)
         Me.TabControl1.TabIndex = 2
         '
-        'TabPage1
+        'TabPage6
         '
-        Me.TabPage1.BackColor = System.Drawing.SystemColors.MenuBar
-        Me.TabPage1.Controls.Add(Me.Label59)
-        Me.TabPage1.Controls.Add(Me.PictureBox1)
-        Me.TabPage1.Controls.Add(Me.Label13)
-        Me.TabPage1.Controls.Add(Me.Label12)
-        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(680, 572)
-        Me.TabPage1.TabIndex = 0
-        Me.TabPage1.Text = "Information"
+        Me.TabPage6.BackColor = System.Drawing.SystemColors.Control
+        Me.TabPage6.Controls.Add(Me.GroupBox2)
+        Me.TabPage6.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage6.Name = "TabPage6"
+        Me.TabPage6.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage6.Size = New System.Drawing.Size(680, 572)
+        Me.TabPage6.TabIndex = 6
+        Me.TabPage6.Text = "Controls"
         '
-        'Label59
+        'GroupBox2
         '
-        Me.Label59.AutoSize = True
-        Me.Label59.Location = New System.Drawing.Point(36, 496)
-        Me.Label59.Name = "Label59"
-        Me.Label59.Size = New System.Drawing.Size(572, 65)
-        Me.Label59.TabIndex = 4
-        Me.Label59.Text = resources.GetString("Label59.Text")
+        Me.GroupBox2.Controls.Add(Me.chk_HoldRunConv)
+        Me.GroupBox2.Controls.Add(Me.Label104)
+        Me.GroupBox2.Controls.Add(Me.Label106)
+        Me.GroupBox2.Controls.Add(Me.nud_HoldUpdateInterval)
+        Me.GroupBox2.Controls.Add(Me.btn_StopHoldTemp)
+        Me.GroupBox2.Controls.Add(Me.Label100)
+        Me.GroupBox2.Controls.Add(Me.Label97)
+        Me.GroupBox2.Controls.Add(Me.nud_TempSetThreshold)
+        Me.GroupBox2.Controls.Add(Me.mtxt_SetTemp)
+        Me.GroupBox2.Controls.Add(Me.btn_RunHoldTemp)
+        Me.GroupBox2.Controls.Add(Me.Label95)
+        Me.GroupBox2.Location = New System.Drawing.Point(3, 6)
+        Me.GroupBox2.Name = "GroupBox2"
+        Me.GroupBox2.Size = New System.Drawing.Size(273, 254)
+        Me.GroupBox2.TabIndex = 0
+        Me.GroupBox2.TabStop = False
+        Me.GroupBox2.Text = "Hold Temperature"
         '
-        'PictureBox1
+        'Label100
         '
-        Me.PictureBox1.Image = Global.Reflow_Oven.My.Resources.Resources.Profile
-        Me.PictureBox1.Location = New System.Drawing.Point(29, 33)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(623, 165)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.PictureBox1.TabIndex = 3
-        Me.PictureBox1.TabStop = False
+        Me.Label100.AutoSize = True
+        Me.Label100.Location = New System.Drawing.Point(92, 141)
+        Me.Label100.Name = "Label100"
+        Me.Label100.Size = New System.Drawing.Size(151, 13)
+        Me.Label100.TabIndex = 5
+        Me.Label100.Text = "Actual temp = Set temp ± Error"
         '
-        'Label13
+        'Label97
         '
-        Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(36, 212)
-        Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(608, 273)
-        Me.Label13.TabIndex = 2
-        Me.Label13.Text = resources.GetString("Label13.Text")
+        Me.Label97.AutoSize = True
+        Me.Label97.Location = New System.Drawing.Point(35, 125)
+        Me.Label97.Name = "Label97"
+        Me.Label97.Size = New System.Drawing.Size(51, 13)
+        Me.Label97.TabIndex = 4
+        Me.Label97.Text = "Set Error:"
         '
-        'Label12
+        'nud_TempSetThreshold
         '
-        Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(17, 17)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(402, 13)
-        Me.Label12.TabIndex = 1
-        Me.Label12.Text = "The common reflow cycle has 4 parts: 1) Preheat, 2) Soak ,3) Reflow, 4) Cool Down" & _
-    ""
+        Me.nud_TempSetThreshold.Location = New System.Drawing.Point(47, 141)
+        Me.nud_TempSetThreshold.Maximum = New Decimal(New Integer() {50, 0, 0, 0})
+        Me.nud_TempSetThreshold.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.nud_TempSetThreshold.Name = "nud_TempSetThreshold"
+        Me.nud_TempSetThreshold.Size = New System.Drawing.Size(39, 20)
+        Me.nud_TempSetThreshold.TabIndex = 3
+        Me.nud_TempSetThreshold.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'mtxt_SetTemp
+        '
+        Me.mtxt_SetTemp.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.mtxt_SetTemp.Location = New System.Drawing.Point(47, 62)
+        Me.mtxt_SetTemp.Mask = "000"
+        Me.mtxt_SetTemp.Name = "mtxt_SetTemp"
+        Me.mtxt_SetTemp.Size = New System.Drawing.Size(58, 26)
+        Me.mtxt_SetTemp.TabIndex = 2
+        '
+        'btn_RunHoldTemp
+        '
+        Me.btn_RunHoldTemp.Location = New System.Drawing.Point(147, 62)
+        Me.btn_RunHoldTemp.Name = "btn_RunHoldTemp"
+        Me.btn_RunHoldTemp.Size = New System.Drawing.Size(75, 23)
+        Me.btn_RunHoldTemp.TabIndex = 1
+        Me.btn_RunHoldTemp.Text = "RUN"
+        Me.btn_RunHoldTemp.UseVisualStyleBackColor = True
+        '
+        'Label95
+        '
+        Me.Label95.AutoSize = True
+        Me.Label95.Location = New System.Drawing.Point(15, 34)
+        Me.Label95.Name = "Label95"
+        Me.Label95.Size = New System.Drawing.Size(225, 13)
+        Me.Label95.TabIndex = 0
+        Me.Label95.Text = "Set the desired temperature and click ""Run"" . "
         '
         'tab_ProfileEditor
         '
@@ -2989,6 +3041,58 @@ Partial Class Form1
         Me.Label10.TabIndex = 0
         Me.Label10.Text = "Availible Ports"
         '
+        'TabPage1
+        '
+        Me.TabPage1.BackColor = System.Drawing.SystemColors.MenuBar
+        Me.TabPage1.Controls.Add(Me.Label59)
+        Me.TabPage1.Controls.Add(Me.PictureBox1)
+        Me.TabPage1.Controls.Add(Me.Label13)
+        Me.TabPage1.Controls.Add(Me.Label12)
+        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Name = "TabPage1"
+        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage1.Size = New System.Drawing.Size(680, 572)
+        Me.TabPage1.TabIndex = 0
+        Me.TabPage1.Text = "Quick Guide"
+        '
+        'Label59
+        '
+        Me.Label59.AutoSize = True
+        Me.Label59.Location = New System.Drawing.Point(36, 496)
+        Me.Label59.Name = "Label59"
+        Me.Label59.Size = New System.Drawing.Size(572, 65)
+        Me.Label59.TabIndex = 4
+        Me.Label59.Text = resources.GetString("Label59.Text")
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.Image = Global.Reflow_Oven.My.Resources.Resources.Profile
+        Me.PictureBox1.Location = New System.Drawing.Point(29, 33)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(623, 165)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox1.TabIndex = 3
+        Me.PictureBox1.TabStop = False
+        '
+        'Label13
+        '
+        Me.Label13.AutoSize = True
+        Me.Label13.Location = New System.Drawing.Point(36, 212)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(608, 273)
+        Me.Label13.TabIndex = 2
+        Me.Label13.Text = resources.GetString("Label13.Text")
+        '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.Location = New System.Drawing.Point(17, 17)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(402, 13)
+        Me.Label12.TabIndex = 1
+        Me.Label12.Text = "The common reflow cycle has 4 parts: 1) Preheat, 2) Soak ,3) Reflow, 4) Cool Down" & _
+    ""
+        '
         'TabPage4
         '
         Me.TabPage4.BackColor = System.Drawing.SystemColors.Control
@@ -3211,11 +3315,11 @@ Partial Class Form1
         'lbl_OverHeatWarning
         '
         Me.lbl_OverHeatWarning.AutoSize = True
-        Me.lbl_OverHeatWarning.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbl_OverHeatWarning.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lbl_OverHeatWarning.ForeColor = System.Drawing.Color.Red
-        Me.lbl_OverHeatWarning.Location = New System.Drawing.Point(604, 33)
+        Me.lbl_OverHeatWarning.Location = New System.Drawing.Point(643, 33)
         Me.lbl_OverHeatWarning.Name = "lbl_OverHeatWarning"
-        Me.lbl_OverHeatWarning.Size = New System.Drawing.Size(206, 20)
+        Me.lbl_OverHeatWarning.Size = New System.Drawing.Size(180, 17)
         Me.lbl_OverHeatWarning.TabIndex = 16
         Me.lbl_OverHeatWarning.Text = "WARNING: OVER HEAT"
         Me.lbl_OverHeatWarning.Visible = False
@@ -3268,6 +3372,53 @@ Partial Class Form1
         Me.lbl_exceptionlabel.Text = "Exception Counter:"
         Me.lbl_exceptionlabel.Visible = False
         '
+        'btn_StopHoldTemp
+        '
+        Me.btn_StopHoldTemp.Location = New System.Drawing.Point(147, 95)
+        Me.btn_StopHoldTemp.Name = "btn_StopHoldTemp"
+        Me.btn_StopHoldTemp.Size = New System.Drawing.Size(75, 23)
+        Me.btn_StopHoldTemp.TabIndex = 6
+        Me.btn_StopHoldTemp.Text = "STOP"
+        Me.btn_StopHoldTemp.UseVisualStyleBackColor = True
+        '
+        'Label104
+        '
+        Me.Label104.AutoSize = True
+        Me.Label104.Location = New System.Drawing.Point(92, 178)
+        Me.Label104.Name = "Label104"
+        Me.Label104.Size = New System.Drawing.Size(96, 13)
+        Me.Label104.TabIndex = 9
+        Me.Label104.Text = "Set update interval"
+        '
+        'Label106
+        '
+        Me.Label106.AutoSize = True
+        Me.Label106.Location = New System.Drawing.Point(35, 162)
+        Me.Label106.Name = "Label106"
+        Me.Label106.Size = New System.Drawing.Size(45, 13)
+        Me.Label106.TabIndex = 8
+        Me.Label106.Text = "Interval:"
+        '
+        'nud_HoldUpdateInterval
+        '
+        Me.nud_HoldUpdateInterval.Location = New System.Drawing.Point(47, 178)
+        Me.nud_HoldUpdateInterval.Maximum = New Decimal(New Integer() {50, 0, 0, 0})
+        Me.nud_HoldUpdateInterval.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.nud_HoldUpdateInterval.Name = "nud_HoldUpdateInterval"
+        Me.nud_HoldUpdateInterval.Size = New System.Drawing.Size(39, 20)
+        Me.nud_HoldUpdateInterval.TabIndex = 7
+        Me.nud_HoldUpdateInterval.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'chk_HoldRunConv
+        '
+        Me.chk_HoldRunConv.AutoSize = True
+        Me.chk_HoldRunConv.Location = New System.Drawing.Point(47, 215)
+        Me.chk_HoldRunConv.Name = "chk_HoldRunConv"
+        Me.chk_HoldRunConv.Size = New System.Drawing.Size(124, 17)
+        Me.chk_HoldRunConv.TabIndex = 10
+        Me.chk_HoldRunConv.Text = "Run Convection Fan"
+        Me.chk_HoldRunConv.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -3297,9 +3448,10 @@ Partial Class Form1
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
         Me.TabControl1.ResumeLayout(False)
-        Me.TabPage1.ResumeLayout(False)
-        Me.TabPage1.PerformLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.TabPage6.ResumeLayout(False)
+        Me.GroupBox2.ResumeLayout(False)
+        Me.GroupBox2.PerformLayout()
+        CType(Me.nud_TempSetThreshold, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tab_ProfileEditor.ResumeLayout(False)
         Me.tab_ProfileEditor.PerformLayout()
         Me.gbox_ProfileEditorPrgmCntrls.ResumeLayout(False)
@@ -3352,6 +3504,9 @@ Partial Class Form1
         Me.GroupBox11.PerformLayout()
         Me.GroupBox8.ResumeLayout(False)
         Me.GroupBox8.PerformLayout()
+        Me.TabPage1.ResumeLayout(False)
+        Me.TabPage1.PerformLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage4.ResumeLayout(False)
         Me.GroupBox59.ResumeLayout(False)
         Me.GroupBox59.PerformLayout()
@@ -3359,6 +3514,7 @@ Partial Class Form1
         Me.GroupBox63.PerformLayout()
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
+        CType(Me.nud_HoldUpdateInterval, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -3643,5 +3799,18 @@ Partial Class Form1
     Friend WithEvents StandbyToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents lbl_ExceptionCnt As System.Windows.Forms.Label
     Friend WithEvents lbl_exceptionlabel As System.Windows.Forms.Label
+    Friend WithEvents TabPage6 As System.Windows.Forms.TabPage
+    Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox
+    Friend WithEvents mtxt_SetTemp As System.Windows.Forms.MaskedTextBox
+    Friend WithEvents btn_RunHoldTemp As System.Windows.Forms.Button
+    Friend WithEvents Label95 As System.Windows.Forms.Label
+    Friend WithEvents Label100 As System.Windows.Forms.Label
+    Friend WithEvents Label97 As System.Windows.Forms.Label
+    Friend WithEvents nud_TempSetThreshold As System.Windows.Forms.NumericUpDown
+    Friend WithEvents btn_StopHoldTemp As System.Windows.Forms.Button
+    Friend WithEvents Label104 As System.Windows.Forms.Label
+    Friend WithEvents Label106 As System.Windows.Forms.Label
+    Friend WithEvents nud_HoldUpdateInterval As System.Windows.Forms.NumericUpDown
+    Friend WithEvents chk_HoldRunConv As System.Windows.Forms.CheckBox
 
 End Class

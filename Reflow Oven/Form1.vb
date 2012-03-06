@@ -48,6 +48,7 @@ Public Class Form1
     Private FirmwareVer As String
     Private Mode As String
     Private EditorStatus As String = "STOPPED"
+    Private WhoRequestedWorker As String = "?"
     '======================================================================
     ' Declare Arrays
 
@@ -70,6 +71,8 @@ Public Class Form1
     Private LblWaitingUpdate As Boolean
     Private CheckOvenPower As Boolean
     Private Debug As Boolean
+    Private RunHoldTemp As Boolean
+    Private PendingProcess As Boolean
     '======================================================================
     ' Declare Integers
     Private Oven_Temp As Integer = 100
@@ -114,6 +117,11 @@ Public Class Form1
 
     Private RXtimeout As Integer = 50
     Private ExceptionCnt As Integer
+    Private FailToSendCnt As Integer
+
+    Private HoldTemp As Integer
+    Private HoldTempError As Integer
+    Private HoldUpdateInterval As Integer
     '======================================================================
     ' Declare Integers Arrays
     Private OTArr(99) As Integer
@@ -173,6 +181,7 @@ Public Class Form1
         End If
         '------------------------------------------------------------------------------------------------------------
         TabPage2.Dispose() ' hide the profile designer tab 
+        TabPage4.Dispose()
         '------------------------------------------------------------------------------------------------------------
         ' give the graph a line  
         ' these values are added to the graph only and not the textboxs or saved file
@@ -261,6 +270,7 @@ Public Class Form1
             PortWrite("U") ' put oven in unconnected mode 
             delay(100)
             SerialPort1.Close()
+
         End If
 
 
@@ -501,7 +511,9 @@ Public Class Form1
                 '       SerialPort1.Dispose()
                 Try
 
-                    ComFailure = True
+                    '   ComFailure = True
+                    newRXdata = "!" ' send fail 
+                    FailToConnectCnt = FailToConnectCnt + 1 ' a count of how many times a command timed out 
                     Exit While
                 Catch ex1 As Exception
 
@@ -675,7 +687,8 @@ Public Class Form1
     Private Sub tmr_Main_Tick(sender As System.Object, e As System.EventArgs) Handles tmr_Main.Tick
         Try
             '------------------------------------------------------------------------------------------------------------
-            If ComFailure = True And ComFailNotified = False Then
+            If FailToSendCnt > 5 And ComFailNotified = False Then
+                FailToSendCnt = 0
                 ComFailNotified = True ' notify the failure 
                 SerialPortClose()
                 MsgBox("Communications with the Oven has been lost:" & vbNewLine & "  1) Check all connections to the oven" & vbNewLine &
@@ -733,7 +746,20 @@ Public Class Form1
                 End If
 
                 UpdateElapsedTime()
-                lbl_PhaseTime.Text = Elapsed_inSec
+                '------------------------------------------------------
+                ' update the phase time label in time remaining, DOWN counter 
+                Select Case EditorStatus
+                    Case "PRE-HEAT"
+                        lbl_PhaseTime.Text = Editor_PreheatTime - Elapsed_inSec ' update the label showing phase time 
+                    Case "SOAK"
+                        lbl_PhaseTime.Text = Editor_SoakTime - Elapsed_inSec ' update the label showing phase time 
+                    Case "REFLOW"
+                        lbl_PhaseTime.Text = Editor_ReflowTime - Elapsed_inSec ' update the label showing phase time 
+                    Case "COOLDOWN"
+                        lbl_PhaseTime.Text = Editor_CoolDownTime - Elapsed_inSec ' update the label showing phase time 
+                End Select
+                'lbl_PhaseTime.Text =  Elapsed_inSec 'This will show an UP counter
+                '------------------------------------------------------
             Else
                 UpdateProfileEditor() ' this enables the run button, only run when profile editor is not running
 
@@ -1049,74 +1075,97 @@ Public Class Form1
                     FirmwareVer = QueryController("f")
                 End If
 
-                '---------------------------------------------------------------------------
-                Dim str() As String
-                str = Split(QueryController("S"), ",") ' get the data from serial port and split it
-                If str.Length < 4 Then
-                    '  GoTo skippy
-                    Exit Sub
-                End If
-                '------------------------------------------
-                Select Case str(0) ' Top Heater
-                    Case "A"
-                        TopHeaterStatus = TriState.True
-                    Case "a"
-                        TopHeaterStatus = TriState.False
-                    Case Else
-                        TopHeaterStatus = TriState.UseDefault
-                End Select
-                '------------------------------------------
-                Select Case str(1) ' Bottom Heater
-                    Case "B"
-                        BottomHeaterStatus = TriState.True
-                    Case "b"
-                        BottomHeaterStatus = TriState.False
-                    Case Else
-                        BottomHeaterStatus = TriState.UseDefault
-                End Select
-                '------------------------------------------
-                Select Case str(2) ' Covection Fan 
-                    Case "C"
-                        ConvFanStatus = TriState.True
-                    Case "c"
-                        ConvFanStatus = TriState.False
-                    Case Else
-                        ConvFanStatus = TriState.UseDefault
-                End Select
-                '------------------------------------------
-                Select Case str(3) ' Exhaust Fan
-                    Case "D"
-                        ExhFanStatus = TriState.True
-                    Case "d"
-                        ExhFanStatus = TriState.False
-                    Case Else
-                        ExhFanStatus = TriState.UseDefault
-                End Select
-                '------------------------------------------
-                Select Case str(4) ' Oven Mode
-                    Case "U"
-                        Mode = "standby"
-                    Case "N"
-                        Mode = "run"
-                    Case "O"
-                        Mode = "over heat"
-                    Case "L"
-                        Mode = "lost connection"
-                    Case Else
-                        Mode = "unknown"
-                End Select
-                '------------------------------------------
+                '------------------------------------------------------------------------------------------
+                ' Update Status 
+                ' get value from controller and evalutate it 
+ 
+                    Dim str() As String
+                    str = Split(QueryController("S"), ",") ' get the data from serial port and split it
+
+                If str.Length < 4 Or str(0) <> "" Or str(0) <> "!" Then ' validate the data is good 
+                    ' if its good then process it , if not then skip 
+                    '------------------------------------------
+                    Select Case str(0) ' Top Heater
+                        Case "A"
+                            TopHeaterStatus = TriState.True
+                        Case "a"
+                            TopHeaterStatus = TriState.False
+                        Case Else
+                            TopHeaterStatus = TriState.UseDefault
+                    End Select
+                    '------------------------------------------
+                    Select Case str(1) ' Bottom Heater
+                        Case "B"
+                            BottomHeaterStatus = TriState.True
+                        Case "b"
+                            BottomHeaterStatus = TriState.False
+                        Case Else
+                            BottomHeaterStatus = TriState.UseDefault
+                    End Select
+                    '------------------------------------------
+                    Select Case str(2) ' Covection Fan 
+                        Case "C"
+                            ConvFanStatus = TriState.True
+                        Case "c"
+                            ConvFanStatus = TriState.False
+                        Case Else
+                            ConvFanStatus = TriState.UseDefault
+                    End Select
+                    '------------------------------------------
+                    Select Case str(3) ' Exhaust Fan
+                        Case "D"
+                            ExhFanStatus = TriState.True
+                        Case "d"
+                            ExhFanStatus = TriState.False
+                        Case Else
+                            ExhFanStatus = TriState.UseDefault
+                    End Select
+                    '------------------------------------------
+                    Select Case str(4) ' Oven Mode
+                        Case "U"
+                            Mode = "standby"
+                        Case "N"
+                            Mode = "run"
+                        Case "O"
+                            Mode = "over heat"
+                        Case "L"
+                            Mode = "lost connection"
+                        Case Else
+                            Mode = "unknown"
+                    End Select
+                    '------------------------------------------
+                End If ' End status update verification test 
+                '------------------------------------------------------------------------------------------
                 ' get temperatures 
+                ' if either fails to validate skip the update process
+                '------------------------------------------
+                ' validate oven temp 
                 Dim RawOvenTemp As String = QueryController("T")
-                delay(50)
-                Dim RawCaseTemp As String = QueryController("t")
-                Try
-                    RawOvenTemp = CLng("&h" & RawOvenTemp)
-                    RawCaseTemp = CLng("&h" & RawCaseTemp)
-                Catch ex As Exception
-                    RawCaseTemp = "1"
-                    RawOvenTemp = "1" ' give them a value 
-                End Try
+
+                If RawOvenTemp <> "" And RawOvenTemp <> "!" Then
+                    ' make sure it is valid 
+                    Try
+                        RawOvenTemp = Convert.ToInt32(RawOvenTemp, 16)
+                    Catch ex As Exception
+                        GoTo EndTempSecton
+                    End Try
+
+                End If ' end raw oventemp test 
+                '------------------------------------------
+                delay(100) ' some time between serial port requests 
+                '------------------------------------------
+                ' validate Case temp 
+                Dim RawcaseTemp As String = QueryController("t")
+
+                If RawcaseTemp <> "" And RawcaseTemp <> "!" Then
+                    ' make sure it is valid 
+                    Try
+                        RawcaseTemp = Convert.ToInt32(RawcaseTemp, 16)
+                    Catch ex As Exception
+                        GoTo EndTempSecton
+                    End Try
+
+                End If ' end raw casetemp test 
                 '----------------------------------------------------------------
                 ' initialize the temperature arrays if they have not been yet
                 If TempAvgInit = False Then
@@ -1216,6 +1265,7 @@ Public Class Form1
                     Case_Temp = (CInt(RawCaseTemp) - 32) * (5 / 9)
                     Oven_Temp = (CInt(RawOvenTemp) - 32) * (5 / 9)
                 End If
+EndTempSecton:
                 '-----------------------------------------------------------------------------------------
                 OKtoUpdate = True
                 '-----------------------------------------------------------------------------------------
@@ -1240,7 +1290,7 @@ Public Class Form1
 
                         SerialPort1Data = ""
                     End If
-skippy:
+
                 End While
                 '-----------------------------------------------------------------------------------------
             End While ' main while 
@@ -1625,6 +1675,11 @@ skippy:
             DataPointsCnt = 0
             '------------------------------------------------------------------------------
             ' if it makes it through input validation run the program
+            If BackgroundWorker1.IsBusy = True Then
+                MsgBox("Another program is running. Please stop that one first then try to run again", MsgBoxStyle.Exclamation)
+                Exit Sub
+            End If
+            WhoRequestedWorker = "PE" ' request to use the background worker 
             BackgroundWorker1.RunWorkerAsync()
             ProfileEditorRunning = True ' tell the other async process to start working
             '------------------------------------------------------------------------------------------------------------
@@ -1888,7 +1943,23 @@ skippy:
     End Sub
 
     Private Sub BackgroundWorker1_DoWork(sender As System.Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
-        RunProfileEditor()
+
+ 
+
+        Select Case WhoRequestedWorker
+
+            Case "PE" ' profile editor
+                RunProfileEditor()
+            Case "PD" ' profile designer 
+
+            Case "HT" ' Hold temop 
+                PrgmRunHoldTemp()
+            Case Else
+                MsgBox("There is no program with permission to run the background worker", MsgBoxStyle.Exclamation)
+
+        End Select
+
+
     End Sub
 
     Private Sub btn_PofileEditor_Stop_Click(sender As System.Object, e As System.EventArgs) Handles btn_PofileEditor_Stop.Click
@@ -2762,4 +2833,116 @@ skippy:
     Private Sub btn_UpdatePorts_Click_1(sender As System.Object, e As System.EventArgs) Handles btn_UpdatePorts.Click
         UpdatePorts()
     End Sub
+
+#Region "Hold Temp Program"
+    Private Sub btn_RunHoldTemp_Click(sender As System.Object, e As System.EventArgs) Handles btn_RunHoldTemp.Click
+        ' Validate inputs 
+        If CInt(mtxt_SetTemp.Text) > MaxOvenTemp Or CInt(mtxt_SetTemp.Text) < MinOvenTemp Then
+            MsgBox("Temp must be between " & MinOvenTemp & " and " & MaxOvenTemp & ". Try again")
+            Exit Sub
+        End If
+
+        If BackgroundWorker1.IsBusy = True Then
+            MsgBox("Another program is running. Please stop that one first then try to run again", MsgBoxStyle.Exclamation)
+            Exit Sub
+        End If
+        '------------------------------------------------------------------------------
+
+        PortWrite("N") ' put oven in run mode 
+        delay(100)
+        '------------------------------------------------------------------------------
+        HoldTemp = CInt(mtxt_SetTemp.Text)
+        HoldTempError = nud_TempSetThreshold.Value
+        HoldUpdateInterval = nud_HoldUpdateInterval.Value
+        RunHoldTemp = True
+        WhoRequestedWorker = "HT"
+        BackgroundWorker1.RunWorkerAsync()
+
+    End Sub
+
+    Private Sub btn_StopHoldTemp_Click(sender As System.Object, e As System.EventArgs) Handles btn_StopHoldTemp.Click
+        RunHoldTemp = False
+        BackgroundWorker1.CancelAsync()
+    End Sub
+
+    Private Sub PrgmRunHoldTemp()
+        While RunHoldTemp = True
+
+            Dim OkTempHigh As Integer = HoldTemp + HoldTempError
+            Dim OkTempLow As Integer = HoldTemp - HoldTempError
+
+            ' The oven should maintain the set temperature within the error tolerance. 
+            ' it turns
+            '-------------------------------------------------------------------------------------------
+            ' heaters off 
+            If Oven_Temp > HoldTemp Then
+                ' turn off heaters 
+                If TopHeaterStatus = TriState.True Then
+                    PortWrite("a") ' turn OFF Top Heater
+                    delay(100)
+                End If
+
+                If TopHeaterStatus = TriState.True Then
+                    PortWrite("b") ' turn OFF Bottom Heater
+                    delay(100)
+                End If
+
+            Else
+                ' turn ON heaters 
+                If TopHeaterStatus = TriState.False Then
+                    PortWrite("A") ' turn ON Top Heater
+                    delay(100)
+                End If
+
+                If TopHeaterStatus = TriState.False Then
+                    PortWrite("B") ' turn ON Bottom Heater
+                    delay(100)
+                End If
+
+            End If
+            '-------------------------------------------------------------------------------------------
+            ' If the oven temp is greater than 10% higher then the set hold temperature turn ON the exhaust fan 
+            If Oven_Temp > HoldTemp * 1.1 Then
+                ' turn on exhaust fan 
+                If ExhFanStatus = TriState.False Then
+                    PortWrite("D") ' turn ON Exhaust Fan 
+                    delay(100)
+                End If
+
+            Else
+                ' turn OFF exhaust fan 
+                If ExhFanStatus = TriState.True Then
+                    PortWrite("d") ' turn OFF Exhaust Fan 
+                    delay(100)
+                End If
+            End If
+            '-------------------------------------------------------------------------------------------
+            ' Check if convection fan should be ON
+            If chk_HoldRunConv.Checked = True And ConvFanStatus = TriState.False Then
+                PortWrite("C") ' turn ON Convection Fan
+                delay(100)
+
+            ElseIf chk_HoldRunConv.Checked = False And ConvFanStatus = TriState.True Then
+                PortWrite("c") ' turn OFF Convection Fan
+                delay(100)
+            End If
+            '-------------------------------------------------------------------------------------------
+            If BackgroundWorker1.CancellationPending = True Then
+                ' put the oven back in standby mode 
+                PortWrite("U")
+                Exit Sub
+            End If
+            '-------------------------------------------------------------------------------------------
+            delay(100) ' update every second 
+
+
+        End While
+    End Sub
+
+    ' end Hold Temp Program region
+    '///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#End Region
+
+
+
 End Class ' END CODE SEGMENT
